@@ -11,7 +11,7 @@
   </section>
   <base-card>
     <div class="controls">
-      <base-button @click="loadCoaches" mode="outline">Refresh</base-button>
+      <base-button @click="loadCoaches(true)" mode="outline">Refresh</base-button>
       <base-button v-if="!isCoach && !isLoading" :link="true" :to="'/register'"
         >Register as Coach</base-button
       >
@@ -64,7 +64,6 @@ export default {
     },
     filteredCoach() {
       const coaches = this.$store.getters['coaches/coaches'];
-      console.log('Coaches', coaches);
       return coaches.filter((coach) => {
         if (this.filterArea.frontend && coach.areas.includes('frontend')) {
           return true;
@@ -89,10 +88,10 @@ export default {
     filteredData(updatedFilterData) {
       this.filterArea = updatedFilterData;
     },
-    async loadCoaches() {
+    async loadCoaches(refresh = false) {
       try {
         this.isLoading = true;
-        await this.$store.dispatch('coaches/loadCoaches');
+        await this.$store.dispatch('coaches/loadCoaches',{forceRefresh:refresh});
         this.isLoading = false;
       } catch (error) {
         this.error = error || 'Something Went wrong..!';
